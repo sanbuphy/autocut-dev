@@ -1,4 +1,4 @@
-# AutoCut: 通过字幕来剪切视频
+# AutoCut-dev: 视频剪辑/字幕生成/视频转录工具
 
 AutoCut 对你的视频自动生成字幕。然后你选择需要保留的句子，AutoCut 将对你视频中对应的片段裁切并保存。你无需使用视频编辑软件，只需要编辑文本文件即可完成剪切。
 
@@ -22,7 +22,7 @@ AutoCut 将持续对这个文件夹里视频进行字幕抽取和剪切。例如
 
 ## 安装
 
-首先安装 Python 包
+建议你使用 python=3.10 python=3.9 版本进行安装,否则可能会出现预期外的问题.
 
 ```
 pip install git+https://github.com/mli/autocut.git
