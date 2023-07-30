@@ -54,6 +54,7 @@ class Transcribe:
             self._save_srt(output, transcribe_results)
             logging.info(f"Transcribed {input} to {output}")
             self._save_md(name + ".md", output, input)
+            self._save_full_text(name + "_full_text.md", output, input)
             logging.info(f'Saved texts to {name + ".md"} to mark sentences')
 
     def _detect_voice_activity(self, audio):
@@ -192,3 +193,27 @@ class Transcribe:
             pre = f"[{s.index},{sec // 60:02d}:{sec % 60:02d}]"
             md.add_task(False, f"{pre:11} {s.content.strip()}")
         md.write()
+
+    def _save_full_text(self, md_fn, srt_fn, video_fn):
+        with open(srt_fn, encoding=self.args.encoding) as f:
+            subs = srt.parse(f.read())
+
+        md = utils.MD(md_fn, self.args.encoding)
+        md.clear()
+        md.add_video(os.path.basename(video_fn))
+
+        if os.path.exists(md.filename):
+            # 删除文件
+            os.remove(md.filename)
+
+        _word_length = 0
+        for s in subs:
+            if s.content.strip() != "< No Speech >":
+                _word_length+=len(s.content.strip())
+                md.add(f"{s.content.strip()}")
+                if _word_length >1000:
+                    with open(md.filename, "ab") as f:
+                        f.write(",".join(md.lines).encode(md.encoding, "replace"))
+                        f.write("\n".encode(md.encoding, "replace"))
+                    _word_length = 0
+                    md.clear()
